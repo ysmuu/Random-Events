@@ -1,0 +1,12 @@
+name: Random-Events
+version: '1.1'
+main: lol.ysmu.randomEvents.RandomEvents
+api-version: '1.21'
+authors: [ ysmu ]
+description: A plugin for random events in Minecraft.
+commands:
+  triggerRandomEvent:
+    description: Trigger a random event
+    usage: /triggerRandomEvent
+    permission: randomevents.trigger
+    permission-message: You don't have permission to trigger random events.
