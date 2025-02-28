@@ -208,10 +208,17 @@ public class EventManager implements Listener {
 
     private void startSupermoon(World world) {
         Bukkit.broadcastMessage("§dA supermoon is rising!");
-        world.setFullTime(18000); // Set time to night
-        world.setFullTime(0); // Set moon phase to full moon
+
+        // Set the time to night (18000 ticks is midnight)
+        world.setFullTime(18000);
+
+        // Calculate the time for a full moon (phase 0)
+        long fullMoonTime = (world.getFullTime() / 24000) * 24000; // Align to the start of a new day
+        world.setFullTime(fullMoonTime); // Set the time to the start of a new day with a full moon
+
+        // Give players night vision
         for (Player player : world.getPlayers()) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 6000, 0)); // Give night vision
+            player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 6000, 0));
         }
     }
 }

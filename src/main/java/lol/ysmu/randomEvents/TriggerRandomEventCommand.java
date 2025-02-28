@@ -1,12 +1,12 @@
 package lol.ysmu.randomEvents;
 
-import lol.ysmu.randomEvents.RandomEvents;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class TriggerRandomEventCommand implements CommandExecutor {
+
     private final RandomEvents plugin;
 
     public TriggerRandomEventCommand(RandomEvents plugin) {
@@ -16,7 +16,7 @@ public class TriggerRandomEventCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("Only players can use this command.");
+            sender.sendMessage("§cOnly players can use this command.");
             return true;
         }
 
@@ -27,9 +27,10 @@ public class TriggerRandomEventCommand implements CommandExecutor {
             return true;
         }
 
-        plugin.triggerRandomEvent();
+        // Access the EventManager instance and call triggerRandomEvent()
+        plugin.eventManager.triggerRandomEvent();
+        plugin.updateLastTriggerTime(); // Update the last trigger time.
         player.sendMessage("§aA random event has been triggered!");
-
         return true;
     }
 }

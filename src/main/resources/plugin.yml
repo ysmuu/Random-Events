@@ -5,15 +5,18 @@ api-version: '1.21'
 authors: [ ysmu ]
 description: A plugin for random events in Minecraft.
 commands:
-  triggerrandomevent:
+  triggerRandomEvent: # Change this to match the camel-case format
     description: Triggers a random event
-    usage: /triggerrandomevent
+    usage: /triggerRandomEvent
   randomevent:
     description: Reloads the configuration for RandomEvents
     usage: /randomevent reload
     aliases:
       - re
 permissions:
+  randomevents.use:
+    description: Allows triggering random events
+    default: op
   randomevents.reload:
     description: Allows reloading the plugin configuration
     default: op

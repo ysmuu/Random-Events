@@ -5,9 +5,13 @@ import lol.ysmu.randomEvents.TriggerRandomEventCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+
+
+
 public class RandomEvents extends JavaPlugin {
 
-    private EventManager eventManager;
+
+    public EventManager eventManager;
     private long lastTriggerTime = 0;
 
     @Override
@@ -15,6 +19,7 @@ public class RandomEvents extends JavaPlugin {
         // Save and load configuration
         saveDefaultConfig();
         reloadConfig();
+
 
         // Initialize EventManager
         eventManager = new EventManager(this);
