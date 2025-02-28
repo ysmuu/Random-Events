@@ -26,3 +26,7 @@ Currently tested on 1.21 and compatibility with other versions is not guaranteed
 There is currently only 2 commands.            
 `/RE reload` Reloads the config.yml                         
 `/TriggerRandomEvent` Triggers a Random Event
+
+## ATTENTION
+
+This plugin is currently in early development, Events may not work as intended.
