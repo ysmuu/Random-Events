@@ -1,0 +1,36 @@
+# Random Events Plugin Configuration
+
+settings:
+  event-interval: 300  # Time in seconds between random events (e.g., 300 = 5 minutes)
+  broadcast-events: true  # Should events be announced to all players?
+  debug-mode: false  # Set to true for extra logging in the console
+  command-bypass-cooldown: true  # Set to true to allow users with the 'randomevents.bypass' permission to bypass the cooldown
+
+messages:
+  start: "&aThe Random Events Plugin has been enabled!"
+  event-begin: "&5A new random event has started!"
+  event-end: "&7The event has ended!"
+  tnt-surprise: "&cA TNT surprise has started!"
+  mob-rush: "&4A horde of mobs is approaching!"
+  speed-boost: "&bYou feel a sudden burst of speed!"
+  night-vision: "&eThe world is now brighter!"
+  explosion-madness: "&cTNT explosions are everywhere!"
+  rich-miner: "&6Ores are now dropping double loot!"
+  random-teleport: "&dPlayers are randomly teleporting!"
+  flying-mode: "&aYou can now fly for a limited time!"
+  lucky-chests: "&2Random chests filled with loot have appeared!"
+  firestorm: "&cThe sky is raining fire!"
+  supercharged-night: "&5A supercharged night has begun!"
+
+events:
+  tnt-surprise: true
+  mob-rush: true
+  speed-boost: true
+  night-vision: true
+  explosion-madness: true
+  rich-miner: true
+  random-teleport: true
+  flying-mode: true
+  lucky-chests: true
+  firestorm: true
+  supercharged-night: true

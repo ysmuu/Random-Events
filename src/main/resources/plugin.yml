@@ -5,8 +5,18 @@ api-version: '1.21'
 authors: [ ysmu ]
 description: A plugin for random events in Minecraft.
 commands:
-  triggerRandomEvent:
-    description: Trigger a random event
-    usage: /triggerRandomEvent
-    permission: randomevents.trigger
-    permission-message: You don't have permission to trigger random events.
+  triggerrandomevent:
+    description: Triggers a random event
+    usage: /triggerrandomevent
+  randomevent:
+    description: Reloads the configuration for RandomEvents
+    usage: /randomevent reload
+    aliases:
+      - re
+permissions:
+  randomevents.reload:
+    description: Allows reloading the plugin configuration
+    default: op
+  randomevents.bypass:
+    description: Allows bypassing the cooldown for random events
+    default: op

@@ -1,21 +1,26 @@
 package lol.ysmu.randomEvents;
 
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
+import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.entity.*;
+import org.bukkit.event.Listener;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
 
 import java.util.List;
 import java.util.Random;
 
-public class EventManager {
+public class EventManager implements Listener {
 
-    private final JavaPlugin plugin;
     private final Random random = new Random();
+    private final RandomEvents plugin;
 
-    public EventManager(JavaPlugin plugin) {
+    public EventManager(RandomEvents plugin) {
         this.plugin = plugin;
     }
 
@@ -23,241 +28,190 @@ public class EventManager {
         List<World> worlds = Bukkit.getWorlds();
         if (worlds.isEmpty()) return;
 
-        World world = worlds.get(0); // Use the first world (can be modified)
+        World world = worlds.get(0);
         List<Player> players = world.getPlayers();
         if (players.isEmpty()) return;
 
-        // Randomly select an event
-        int eventIndex = random.nextInt(20); // Add more events as needed
+        int eventIndex = random.nextInt(20);
+        String eventName = getEventName(eventIndex);
+
+        if (!plugin.getConfig().getBoolean("events." + eventName, true)) {
+            return;
+        }
+
+        plugin.updateLastTriggerTime();
+
         switch (eventIndex) {
-            case 0:
-                startMeteorShower(world);
-                break;
-            case 1:
-                startZombieSiege(world);
-                break;
-            case 2:
-                startTreasureHunt(world);
-                break;
-            case 3:
-                startSuperchargedNight(world);
-                break;
-            case 4:
-                startRainbowSky(world);
-                break;
-            case 5:
-                startSuddenDrought(world);
-                break;
-            case 6:
-                startMeteorStrike(world);
-                break;
-            case 7:
-                startDarkFog(world);
-                break;
-            case 8:
-                startTimeFreeze(world);
-                break;
-            case 9:
-                startGravityShift(world);
-                break;
-            case 10:
-                startSolarEclipse(world);
-                break;
-            case 11:
-                startChasmOpening(world);
-                break;
-            case 12:
-                startThunderstormWithTornadoes(world);
-                break;
-            case 13:
-                startEnderworldShift(world);
-                break;
-            case 14:
-                startRainbowFireworks(world);
-                break;
-            case 15:
-                startStormOfShards(world);
-                break;
-            case 16:
-                startSuddenFlood(world);
-                break;
-            case 17:
-                startSupermoon(world);
-                break;
-            case 18:
-                startEnderworldShift(world);
-                break;
-            case 19:
-                startRainbowFireworks(world);
-                break;
-            default:
-                break;
+            case 0 -> startMeteorShower(world);
+            case 1 -> startZombieSiege(world);
+            case 2 -> startTreasureHunt(world);
+            case 3 -> startSuperchargedNight(world);
+            case 4 -> startRainbowSky(world);
+            case 5 -> startSuddenDrought(world);
+            case 6 -> startMeteorStrike(world);
+            case 7 -> startDarkFog(world);
+            case 8 -> startTimeFreeze(world);
+            case 9 -> startGravityShift(world);
+            case 10 -> startSolarEclipse(world);
+            case 11 -> startChasmOpening(world);
+            case 12 -> startThunderstormWithTornadoes(world);
+            case 13, 18 -> startEnderworldShift(world);
+            case 14, 19 -> startRainbowFireworks(world);
+            case 15 -> startStormOfShards(world);
+            case 16 -> startSuddenFlood(world);
+            case 17 -> startSupermoon(world);
         }
     }
 
-    private void startMeteorShower(World world) {
-        Bukkit.broadcastMessage("§6A meteor shower has begun!");
+    private String getEventName(int eventIndex) {
+        return switch (eventIndex) {
+            case 0 -> "meteor_shower";
+            case 1 -> "zombie_siege";
+            case 2 -> "treasure_hunt";
+            case 3 -> "supercharged_night";
+            case 4 -> "rainbow_sky";
+            case 5 -> "sudden_drought";
+            case 6 -> "meteor_strike";
+            case 7 -> "dark_fog";
+            case 8 -> "time_freeze";
+            case 9 -> "gravity_shift";
+            case 10 -> "solar_eclipse";
+            case 11 -> "chasm_opening";
+            case 12 -> "thunderstorm_tornadoes";
+            case 13, 18 -> "enderworld_shift";
+            case 14, 19 -> "rainbow_fireworks";
+            case 15 -> "storm_of_shards";
+            case 16 -> "sudden_flood";
+            case 17 -> "supermoon";
+            default -> "unknown_event";
+        };
+    }
 
-        for (Player player : world.getPlayers()) {
-            // Spawn fireballs above the player
-            for (int i = 0; i < 10; i++) { // Spawn 10 meteors per player
-                world.spawn(player.getLocation().add(random.nextInt(50) - 25, 50, random.nextInt(50) - 25), org.bukkit.entity.Fireball.class);
-            }
+    private void startMeteorShower(World world) {
+        Bukkit.broadcastMessage("§cMeteor shower incoming!");
+        for (int i = 0; i < 5; i++) {
+            Location loc = world.getSpawnLocation().add(random.nextInt(50) - 25, 30, random.nextInt(50) - 25);
+            world.spawnEntity(loc, EntityType.FIREBALL);
         }
     }
 
     private void startZombieSiege(World world) {
-        Bukkit.broadcastMessage("§cA zombie siege is approaching!");
-
-        for (Player player : world.getPlayers()) {
-            // Spawn 10 zombies around each player
-            for (int i = 0; i < 10; i++) {
-                world.spawn(player.getLocation().add(random.nextInt(10) - 5, 0, random.nextInt(10) - 5), org.bukkit.entity.Zombie.class);
-            }
+        Bukkit.broadcastMessage("§4Zombies are invading!");
+        for (int i = 0; i < 20; i++) {
+            Location loc = world.getSpawnLocation().add(random.nextInt(50) - 25, 0, random.nextInt(50) - 25);
+            world.spawnEntity(loc, EntityType.ZOMBIE);
         }
     }
 
     private void startTreasureHunt(World world) {
-        Bukkit.broadcastMessage("§aA treasure chest has been hidden nearby!");
-
-        for (Player player : world.getPlayers()) {
-            // Find a random location near the player
-            org.bukkit.Location chestLocation = player.getLocation().add(random.nextInt(20) - 10, 0, random.nextInt(20) - 10);
-
-            // Ensure the chest is placed on a solid block
-            chestLocation.setY(world.getHighestBlockYAt(chestLocation));
-
-            // Place the chest
-            world.getBlockAt(chestLocation).setType(org.bukkit.Material.CHEST);
-
-            // Add loot to the chest
-            org.bukkit.block.Chest chest = (org.bukkit.block.Chest) world.getBlockAt(chestLocation).getState();
-            org.bukkit.inventory.Inventory chestInventory = chest.getBlockInventory();
-            chestInventory.addItem(new org.bukkit.inventory.ItemStack(org.bukkit.Material.DIAMOND, 3));
-            chestInventory.addItem(new org.bukkit.inventory.ItemStack(org.bukkit.Material.GOLD_INGOT, 5));
-        }
+        Bukkit.broadcastMessage("§6A treasure chest has appeared!");
+        Location loc = world.getSpawnLocation().add(random.nextInt(50) - 25, 0, random.nextInt(50) - 25);
+        world.getBlockAt(loc).setType(Material.CHEST);
+        Chest chest = (Chest) world.getBlockAt(loc).getState();
+        Inventory inv = chest.getBlockInventory();
+        inv.addItem(new ItemStack(Material.DIAMOND, 5));
     }
 
     private void startSuperchargedNight(World world) {
-        Bukkit.broadcastMessage("§5A supercharged night has begun!");
+        Bukkit.broadcastMessage("§5Night is more dangerous!");
+        world.setTime(18000);
         for (Player player : world.getPlayers()) {
-            // Give players increased power or effects during the night
-            player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 6000, 1));  // Increase damage for 5 minutes
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 6000, 1));  // Speed boost for 5 minutes
+            player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 6000, 1));
         }
     }
 
     private void startRainbowSky(World world) {
-        Bukkit.broadcastMessage("§6A beautiful rainbow sky has appeared!");
-        // Here, you could change the sky color (to simulate a rainbow) or just broadcast a message
-        for (Player player : world.getPlayers()) {
-            player.sendTitle("§6Rainbow Sky!", "Enjoy the view!", 10, 70, 20);  // Display a rainbow title to all players
-        }
+        Bukkit.broadcastMessage("§bThe sky is glowing with colors!");
+        world.setStorm(false);
     }
 
     private void startSuddenDrought(World world) {
-        Bukkit.broadcastMessage("§cA sudden drought has begun, water sources are drying up!");
-        // Prevent water from flowing or evaporate water blocks
-        for (World world1 : Bukkit.getWorlds()) {
-            for (org.bukkit.entity.Entity entity : world1.getEntities()) {
-                if (entity instanceof org.bukkit.entity.WaterMob) {
-                    entity.remove(); // Remove any water mobs
-                }
-            }
-        }
+        Bukkit.broadcastMessage("§eThe rivers have dried up!");
+        world.setWeatherDuration(0);
     }
 
     private void startMeteorStrike(World world) {
-        Bukkit.broadcastMessage("§6A meteor has struck the ground!");
-        // Spawn a meteor (use Fireball or similar to simulate meteor strike)
-        world.spawn(world.getSpawnLocation().add(random.nextInt(50) - 25, 100, random.nextInt(50) - 25), org.bukkit.entity.Fireball.class);
+        Bukkit.broadcastMessage("§4A meteor is crashing!");
+        Location loc = world.getSpawnLocation().add(0, 20, 0);
+        world.spawnEntity(loc, EntityType.FIREBALL);
     }
 
     private void startDarkFog(World world) {
-        Bukkit.broadcastMessage("§7A dark fog has covered the land!");
-        // Darken the world and add a fog effect (can use potion effects to simulate this)
-        for (Player player : world.getPlayers()) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 600, 1));  // Add blindness effect for 30 seconds
-        }
+        Bukkit.broadcastMessage("§8A thick fog covers the land...");
+        world.setTime(18000);
     }
 
     private void startTimeFreeze(World world) {
-        Bukkit.broadcastMessage("§bTime has frozen for a moment!");
-        // Freeze time by stopping mobs and players from moving or doing actions
-        for (Player player : world.getPlayers()) {
-            player.setWalkSpeed(0);  // Stop player movement
-        }
-        Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
-            for (Player player : world.getPlayers()) {
-                player.setWalkSpeed(0.2f);  // Restore player movement
-            }
-        }, 200L);  // Duration of the time freeze (10 seconds)
+        Bukkit.broadcastMessage("§3Time has frozen!");
+        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
     }
 
     private void startGravityShift(World world) {
-        Bukkit.broadcastMessage("§5Gravity has shifted!");
-        // Make players float or fall rapidly by modifying gravity
+        Bukkit.broadcastMessage("§fGravity feels weird...");
         for (Player player : world.getPlayers()) {
-            player.setGravity(false);  // Disable gravity for the player
+            player.setVelocity(new Vector(0, 2, 0));
         }
-        Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
-            for (Player player : world.getPlayers()) {
-                player.setGravity(true);  // Restore gravity for the player
-            }
-        }, 200L);  // Duration of the gravity shift (10 seconds)
     }
 
     private void startSolarEclipse(World world) {
-        Bukkit.broadcastMessage("§6A solar eclipse is occurring!");
-        // Darken the world as if it’s a solar eclipse
-        world.setStorm(true);  // Simulate darkness by enabling a storm
-        world.setThundering(true);  // Add thunder to the atmosphere
+        Bukkit.broadcastMessage("§9A solar eclipse is happening!");
+        world.setTime(18000);
     }
 
     private void startChasmOpening(World world) {
-        Bukkit.broadcastMessage("§cA chasm has opened in the world!");
-        // Create a large hole or chasm in the world
-        org.bukkit.Location loc = world.getSpawnLocation();
-        for (int y = 0; y < 10; y++) {
-            for (int x = -20; x < 20; x++) {
-                for (int z = -20; z < 20; z++) {
-                    world.getBlockAt(loc.clone().add(x, -y, z)).setType(org.bukkit.Material.AIR);  // Remove blocks to create a chasm
-                }
-            }
-        }
+        Bukkit.broadcastMessage("§4The ground is shaking!");
     }
 
     private void startThunderstormWithTornadoes(World world) {
-        Bukkit.broadcastMessage("§7A thunderstorm with tornadoes has appeared!");
-        // Spawn lightning and potentially create tornado-like effects
-        world.setStorm(true);  // Enable storm
-        world.setThundering(true);  // Add thunder
-        // You could simulate tornadoes with particle effects or mobs in a whirling motion, but creating a true tornado effect is complicated
+        Bukkit.broadcastMessage("§eThunderstorm with tornadoes incoming!");
+        world.setStorm(true);
     }
 
     private void startEnderworldShift(World world) {
-        Bukkit.broadcastMessage("§5An Enderworld Shift has occurred!");
-        // Add effects, like teleporting players to random locations, or changing the world to end-like structures
+        Bukkit.broadcastMessage("§5The world is shifting into an Ender dimension...");
+        world.setTime(18000);
     }
 
     private void startRainbowFireworks(World world) {
-        Bukkit.broadcastMessage("§6Rainbow Fireworks are going off!");
-        // Fire fireworks with rainbow colors
-        world.spawn(world.getSpawnLocation(), org.bukkit.entity.Firework.class);
+        Bukkit.broadcastMessage("§eRainbow fireworks are lighting up the sky!");
+        for (int i = 0; i < 10; i++) {
+            Location loc = world.getSpawnLocation().add(random.nextInt(50) - 25, 10, random.nextInt(50) - 25);
+            Firework firework = (Firework) world.spawnEntity(loc, EntityType.FIREWORK_ROCKET);
+            FireworkMeta meta = firework.getFireworkMeta();
+            FireworkEffect effect = FireworkEffect.builder()
+                    .withColor(Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.BLUE, Color.PURPLE)
+                    .with(FireworkEffect.Type.BALL_LARGE)
+                    .trail(true)
+                    .build();
+            meta.addEffect(effect);
+            firework.setFireworkMeta(meta);
+        }
     }
 
     private void startStormOfShards(World world) {
-        Bukkit.broadcastMessage("§7A storm of shards is raining down!");
-        // Simulate shards falling from the sky (use glass or sharp items)
+        Bukkit.broadcastMessage("§cA storm of shards is falling from the sky!");
+        for (int i = 0; i < 20; i++) {
+            Location loc = world.getSpawnLocation().add(random.nextInt(50) - 25, 30, random.nextInt(50) - 25);
+            FallingBlock shard = world.spawnFallingBlock(loc, Material.GLASS.createBlockData());
+            shard.setDropItem(false); // Prevent shards from dropping items
+            shard.setVelocity(new Vector(0, -1, 0)); // Make shards fall straight down
+        }
     }
 
     private void startSuddenFlood(World world) {
-        Bukkit.broadcastMessage("§bA sudden flood is happening!");
-        // Flood the area with water, rising at a rapid pace
+        Bukkit.broadcastMessage("§bA sudden flood is occurring!");
+        for (int i = 0; i < 10; i++) {
+            Location loc = world.getSpawnLocation().add(random.nextInt(50) - 25, 0, random.nextInt(50) - 25);
+            loc.getBlock().setType(Material.WATER);
+        }
     }
 
     private void startSupermoon(World world) {
-        Bukkit.broadcastMessage("§6A Supermoon is shining brightly!");
-        // Change the moon's size or add special effects to simulate a supermoon
+        Bukkit.broadcastMessage("§dA supermoon is rising!");
+        world.setFullTime(18000); // Set time to night
+        world.setFullTime(0); // Set moon phase to full moon
+        for (Player player : world.getPlayers()) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 6000, 0)); // Give night vision
+        }
     }
 }
